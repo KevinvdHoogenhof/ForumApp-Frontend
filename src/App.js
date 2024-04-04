@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import PostThread from "./components/postthread";
-import Thread from "./components/thread";
+import EditThread from "./components/editthread";
 import ThreadList from "./components/threadlist";
 
 class App extends Component {
@@ -13,7 +13,7 @@ class App extends Component {
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/threads"} className="navbar-brand">
-            Threads11
+            Forum application
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -23,7 +23,7 @@ class App extends Component {
             </li>
             <li className="nav-item">
               <Link to={"/post"} className="nav-link">
-                Post
+                PostThread
               </Link>
             </li>
           </div>
@@ -34,7 +34,7 @@ class App extends Component {
             <Route path="/" element={<ThreadList/>} />
             <Route path="/threads" element={<ThreadList/>} />
             <Route path="/post" element={<PostThread/>} />
-            <Route path="/thread/:id" element={<Thread/>} />
+            <Route path="/editthread/:id" element={<EditThread/>} />
           </Routes>
         </div>
       </div>

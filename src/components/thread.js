@@ -1,198 +1,184 @@
 import React, { Component } from "react";
 import ThreadService from "../services/threadservice";
-import { withRouter } from '../common/with-router';
+import { Link } from "react-router-dom";
 
-class Thread extends Component {
-  constructor(props) {
-    super(props);
-    this.onChangeName = this.onChangeName.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.getThread = this.getThread.bind(this);
-    //this.updatePublished = this.updatePublished.bind(this);
-    this.updateThread = this.updateThread.bind(this);
-    this.deleteThread = this.deleteThread.bind(this);
-
-    this.state = {
-      currentThread: {
-        id: null,
-        name: "",
-        description: "",
-        //published: false
-      },
-      message: ""
-    };
-  }
-
-  componentDidMount() {
-    this.getThread(this.props.router.params.id);
-  }
-
-  onChangeName(e) {
-    const name = e.target.value;
-
-    this.setState(function(prevState) {
-      return {
-        currentThread: {
-          ...prevState.currentThread,
-          name: name
-        }
+export default class Thread extends Component {
+    constructor(props) {
+      super(props);
+      this.onChangeSearchName = this.onChangeSearchName.bind(this);
+      this.retrievePosts = this.retrievePosts.bind(this);
+      this.refreshList = this.refreshList.bind(this);
+      this.setActivePost = this.setActivePost.bind(this);
+      //this.removeAllThreads = this.removeAllThreads.bind(this);
+      this.searchName = this.searchName.bind(this);
+  
+      this.state = {
+        posts: [],
+        currentPost: null,
+        currentIndex: -1,
+        searchName: ""
       };
-    });
-  }
+    }
+  
+    componentDidMount() {
+      this.retrievePosts();
+    }
 
-  onChangeDescription(e) {
-    const description = e.target.value;
+    onChangeSearchName(e) {
+        const searchName = e.target.value;
     
-    this.setState(prevState => ({
-      currentThread: {
-        ...prevState.currentThread,
-        description: description
+        this.setState({
+          searchName: searchName
+        });
       }
-    }));
-  }
-
-  getThread(id) {
-    ThreadService.get(id)
-      .then(response => {
+    
+      retrievePosts() {
+        ThreadService.getAll()
+          .then(response => {
+            this.setState({
+              threads: response.data
+            });
+            console.log(response.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
+    
+      refreshList() {
+        this.retrievePosts();
         this.setState({
-          currentThread: response.data
+          currentPost: null,
+          currentIndex: -1
         });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-  /*
-  updatePublished(status) {
-    var data = {
-      id: this.state.currentThread.id,
-      name: this.state.currentThread.name,
-      description: this.state.currentThread.description,
-      published: status
-    };
-
-    ThreadService.update(this.state.currentThread.id, data)
-      .then(response => {
-        this.setState(prevState => ({
-          currentThread: {
-            ...prevState.currentThread,
-            //published: status
-          }
-        }));
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }*/
-
-  updateThread() {
-    ThreadService.update(
-      this.state.currentThread.id,
-      this.state.currentThread
-    )
-      .then(response => {
-        console.log(response.data);
+      }
+    
+      setActivePost(post, index) {
         this.setState({
-          message: "The tutorial was updated successfully!"
+          currentPost: post,
+          currentIndex: index
         });
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
-  deleteThread() {    
-    ThreadService.delete(this.state.currentThread.id)
-      .then(response => {
-        console.log(response.data);
-        this.props.router.navigate('/threads');
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
-  render() {
-    const { currentThread } = this.state;
-
-    return (
-      <div>
-        {currentThread ? (
-          <div className="edit-form">
-            <h4>Thread</h4>
-            <form>
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
+      }
+    
+      /*removeAllThreads() {
+        ThreadService.deleteAll()
+          .then(response => {
+            console.log(response.data);
+            this.refreshList();
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }*/
+    
+      searchName() {
+        ThreadService.findByName(this.state.searchName)
+          .then(response => {
+            this.setState({
+                posts: response.data
+            });
+            console.log(response.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
+    
+      render() {
+        const { searchName, posts, currentPost, currentIndex } = this.state;
+    
+        return (
+          <div className="list row">
+            <div className="col-md-8">
+              <div className="input-group mb-3">
                 <input
                   type="text"
                   className="form-control"
-                  id="name"
-                  value={currentThread.name}
-                  onChange={this.onChangeName}
+                  placeholder="Search by name"
+                  value={searchName}
+                  onChange={this.onChangeSearchName}
                 />
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={this.searchName}
+                  >
+                    Search
+                  </button>
+                </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="description"
-                  value={currentThread.description}
-                  onChange={this.onChangeDescription}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>
-                  <strong>Status:</strong>
-                </label>
-                {/*{currentThread.published ? "Published" : "Pending"}*/}
-              </div>
-            </form>
-
-            {/*{currentThread.published ? (
+            </div>
+            <div className="col-md-6">
+              <h4>Posts List</h4>
+    
+              <ul className="list-group">
+                {posts &&
+                  posts.map((post, index) => (
+                    <li
+                      className={
+                        "list-group-item " +
+                        (index === currentIndex ? "active" : "")
+                      }
+                      onClick={() => this.setActivePost(post, index)}
+                      key={index}
+                    >
+                      {post.name}
+                    </li>
+                  ))}
+              </ul>
+            {/*
               <button
-                className="badge badge-primary mr-2"
-                onClick={() => this.updatePublished(false)}
-              >
-                UnPublish
+                className="m-3 btn btn-sm btn-danger"
+                onClick={this.removeAllThreads}
+                Remove All
               </button>
-            ) : (
-              <button
-                className="badge badge-primary mr-2"
-                onClick={() => this.updatePublished(true)}
-              >
-                Publish
-              </button>
-            )}*/}
-
-            <button
-              className="badge badge-danger mr-2"
-              onClick={this.deleteThread}
-            >
-              Delete
-            </button>
-
-            <button
-              type="submit"
-              className="badge badge-success"
-              onClick={this.updateThread}
-            >
-              Update
-            </button>
-            <p>{this.state.message}</p>
+              >*/}
+            </div>
+            <div className="col-md-6">
+              {currentPost ? (
+                <div>
+                  <h4>Post</h4>
+                  <div>
+                    <label>
+                      <strong>Name:</strong>
+                    </label>{" "}
+                    {currentPost.name}
+                  </div>
+                  <div>
+                    <label>
+                      <strong>Description:</strong>
+                    </label>{" "}
+                    {currentPost.description}
+                  </div>
+                  {/*
+                  <div>
+                    <label>
+                      <strong>Status:</strong>
+                    </label>{" "}
+                    {currentThread.published ? "Published" : "Pending"}
+              </div>
+    
+                  <Link
+                    to={"/editthread/" + currentThread.id}
+                  >
+                    Edit
+                  </Link>
+    
+                  <Link
+                    to={"/thread/" + currentThread.id}
+                  >
+                    Visit thread
+                  </Link>*/}
+                </div>
+              ) : (
+                <div>
+                  <br />
+                  <p>Please click on a Post...</p>
+                </div>
+              )}
+            </div>
           </div>
-        ) : (
-          <div>
-            <br />
-            <p>Please click on a thread...</p>
-          </div>
-        )}
-      </div>
-    );
-  }
-}
-
-export default withRouter(Thread);
+        );
+      }
+    }

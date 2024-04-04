@@ -160,9 +160,15 @@ export default class ThreadList extends Component {
           </div>*/}
 
               <Link
-                to={"/thread/" + currentThread.id}
+                to={"/editthread/" + currentThread.id}
               >
                 Edit
+              </Link>
+
+              <Link
+                to={"/thread/" + currentThread.id}
+              >
+                Visit thread
               </Link>
             </div>
           ) : (
