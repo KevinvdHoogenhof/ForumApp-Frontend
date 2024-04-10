@@ -6,6 +6,8 @@ import "./App.css";
 import PostThread from "./components/postthread";
 import EditThread from "./components/editthread";
 import ThreadList from "./components/threadlist";
+import PostListOfThread from "./components/postlistofthread";
+import PostList from "./components/postlist";
 
 class App extends Component {
   render() {
@@ -22,8 +24,13 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to={"/post"} className="nav-link">
+              <Link to={"/postthread"} className="nav-link">
                 PostThread
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/posts"} className="nav-link">
+                Posts
               </Link>
             </li>
           </div>
@@ -33,8 +40,10 @@ class App extends Component {
           <Routes>
             <Route path="/" element={<ThreadList/>} />
             <Route path="/threads" element={<ThreadList/>} />
-            <Route path="/post" element={<PostThread/>} />
+            <Route path="/postthread" element={<PostThread/>} />
             <Route path="/editthread/:id" element={<EditThread/>} />
+            <Route path="/thread/:id" element={<PostListOfThread/>} />
+            <Route path="/posts" element={<PostList/>} />
           </Routes>
         </div>
       </div>
