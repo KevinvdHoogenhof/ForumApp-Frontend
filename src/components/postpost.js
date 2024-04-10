@@ -5,14 +5,14 @@ export default class PostPost extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this); //Add other fields
+    this.onChangeContent = this.onChangeContent.bind(this); //Add other fields
     this.savePost = this.savePost.bind(this);
     this.newPost = this.newPost.bind(this);
 
     this.state = { //Update later to fit model
       id: null,
       name: "",
-      description: "", 
+      content: "", 
 
       submitted: false
     };
@@ -24,9 +24,9 @@ export default class PostPost extends Component {
     });
   }
 
-  onChangeDescription(e) {
+  onChangeContent(e) {
     this.setState({
-      description: e.target.value
+        content: e.target.value
     });
   }
 
@@ -35,7 +35,7 @@ export default class PostPost extends Component {
   savePost() {
     var data = {
       name: this.state.name,
-      description: this.state.description
+      content: this.state.content
     };
 
     PostService.create(data)
@@ -43,7 +43,7 @@ export default class PostPost extends Component {
         this.setState({
           id: response.data.id,
           name: response.data.name,
-          description: response.data.description, //Add fields
+          content: response.data.content, //Add fields
 
           submitted: true
         });
@@ -58,7 +58,7 @@ export default class PostPost extends Component {
     this.setState({
       id: null,
       name: "",
-      description: "", //Add fields
+      content: "", //Add fields
 
       submitted: false
     });
@@ -90,15 +90,15 @@ export default class PostPost extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="content">Content</label>
               <input
                 type="text"
                 className="form-control"
-                id="description"
+                id="content"
                 required
-                value={this.state.description}
-                onChange={this.onChangeDescription}
-                name="description"
+                value={this.state.content}
+                onChange={this.onChangeContent}
+                name="content"
               />
             </div>
 
