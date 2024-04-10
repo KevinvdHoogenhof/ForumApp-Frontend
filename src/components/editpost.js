@@ -1,22 +1,22 @@
 import React, { Component } from "react";
-import ThreadService from "../services/threadservice";
+import PostService from "../services/postservice";
 import { withRouter } from '../common/with-router';
 
-class EditThread extends Component {
+class EditPost extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.getThread = this.getThread.bind(this);
+    this.onChangeDescription = this.onChangeDescription.bind(this); //Add fields
+    this.getPost = this.getPost.bind(this);
     //this.updatePublished = this.updatePublished.bind(this);
-    this.updateThread = this.updateThread.bind(this);
-    this.deleteThread = this.deleteThread.bind(this);
+    this.updatePost = this.updatePost.bind(this);
+    this.deletePost = this.deletePost.bind(this);
 
     this.state = {
-      currentThread: {
+      currentPost: {
         id: null,
         name: "",
-        description: "",
+        description: "", //Add fields
         //published: false
       },
       message: ""
@@ -24,7 +24,7 @@ class EditThread extends Component {
   }
 
   componentDidMount() {
-    this.getThread(this.props.router.params.id);
+    this.getPost(this.props.router.params.id);
   }
 
   onChangeName(e) {
@@ -32,8 +32,8 @@ class EditThread extends Component {
 
     this.setState(function(prevState) {
       return {
-        currentThread: {
-          ...prevState.currentThread,
+        currentPost: {
+          ...prevState.currentPost,
           name: name
         }
       };
@@ -44,18 +44,20 @@ class EditThread extends Component {
     const description = e.target.value;
     
     this.setState(prevState => ({
-      currentThread: {
-        ...prevState.currentThread,
+      currentPost: {
+        ...prevState.currentPost,
         description: description
       }
     }));
   }
 
-  getThread(id) {
-    ThreadService.get(id)
+  //Add fields
+
+  getPost(id) {
+    PostService.get(id) //Maybe change call
       .then(response => {
         this.setState({
-          currentThread: response.data
+          currentPost: response.data
         });
         console.log(response.data);
       })
@@ -66,17 +68,17 @@ class EditThread extends Component {
   /*
   updatePublished(status) {
     var data = {
-      id: this.state.currentThread.id,
-      name: this.state.currentThread.name,
-      description: this.state.currentThread.description,
+      id: this.state.currentPost.id,
+      name: this.state.currentPost.name,
+      description: this.state.currentPost.description,
       published: status
     };
 
-    ThreadService.update(this.state.currentThread.id, data)
+    ThreadService.update(this.state.currentPost.id, data)
       .then(response => {
         this.setState(prevState => ({
-          currentThread: {
-            ...prevState.currentThread,
+          currentPost: {
+            ...prevState.currentPost,
             //published: status
           }
         }));
@@ -87,15 +89,15 @@ class EditThread extends Component {
       });
   }*/
 
-  updateThread() {
-    ThreadService.update(
-      this.state.currentThread.id,
-      this.state.currentThread
+  updatePost() {
+    PostService.update(
+      this.state.currentPost.id,
+      this.state.currentPost
     )
       .then(response => {
         console.log(response.data);
         this.setState({
-          message: "The thread was updated successfully!"
+          message: "The post was updated successfully!"
         });
       })
       .catch(e => {
@@ -103,11 +105,11 @@ class EditThread extends Component {
       });
   }
 
-  deleteThread() {    
-    ThreadService.delete(this.state.currentThread.id)
+  deletePost() {    
+    PostService.delete(this.state.currentPost.id)
       .then(response => {
         console.log(response.data);
-        this.props.router.navigate('/threads');
+        this.props.router.navigate('/posts');
       })
       .catch(e => {
         console.log(e);
@@ -115,13 +117,13 @@ class EditThread extends Component {
   }
 
   render() {
-    const { currentThread } = this.state;
+    const { currentPost } = this.state;
 
     return (
       <div>
-        {currentThread ? (
+        {currentPost ? (
           <div className="edit-form">
-            <h4>Thread</h4>
+            <h4>Post</h4>
             <form>
               <div className="form-group">
                 <label htmlFor="name">Name</label>
@@ -129,7 +131,7 @@ class EditThread extends Component {
                   type="text"
                   className="form-control"
                   id="name"
-                  value={currentThread.name}
+                  value={currentPost.name}
                   onChange={this.onChangeName}
                 />
               </div>
@@ -139,7 +141,7 @@ class EditThread extends Component {
                   type="text"
                   className="form-control"
                   id="description"
-                  value={currentThread.description}
+                  value={currentPost.description}
                   onChange={this.onChangeDescription}
                 />
               </div>
@@ -148,11 +150,11 @@ class EditThread extends Component {
                 <label>
                   <strong>Status:</strong>
                 </label>
-                {/*{currentThread.published ? "Published" : "Pending"}*/}
+                {/*{currentPost.published ? "Published" : "Pending"}*/}
               </div>
             </form>
 
-            {/*{currentThread.published ? (
+            {/*{currentPost.published ? (
               <button
                 className="badge badge-primary mr-2"
                 onClick={() => this.updatePublished(false)}
@@ -170,7 +172,7 @@ class EditThread extends Component {
 
             <button
               className="badge badge-danger mr-2"
-              onClick={this.deleteThread}
+              onClick={this.deletePost}
             >
               Delete
             </button>
@@ -178,7 +180,7 @@ class EditThread extends Component {
             <button
               type="submit"
               className="badge badge-success"
-              onClick={this.updateThread}
+              onClick={this.updatePost}
             >
               Update
             </button>
@@ -187,7 +189,7 @@ class EditThread extends Component {
         ) : (
           <div>
             <br />
-            <p>Please click on a thread...</p>
+            <p>Please click on a post...</p>
           </div>
         )}
       </div>
@@ -195,4 +197,4 @@ class EditThread extends Component {
   }
 }
 
-export default withRouter(EditThread);
+export default withRouter(EditPost);
