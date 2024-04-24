@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ThreadService from "../services/threadservice";
 import { withRouter } from '../common/with-router';
 
-class Thread extends Component {
+class EditThread extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
@@ -95,7 +95,7 @@ class Thread extends Component {
       .then(response => {
         console.log(response.data);
         this.setState({
-          message: "The tutorial was updated successfully!"
+          message: "The thread was updated successfully!"
         });
       })
       .catch(e => {
@@ -166,18 +166,17 @@ class Thread extends Component {
               >
                 Publish
               </button>
-            )}*/}
+            )}
 
             <button
               className="badge badge-danger mr-2"
               onClick={this.deleteThread}
             >
               Delete
-            </button>
+            </button>*/}
 
             <button
               type="submit"
-              className="badge badge-success"
               onClick={this.updateThread}
             >
               Update
@@ -195,4 +194,4 @@ class Thread extends Component {
   }
 }
 
-export default withRouter(Thread);
+export default withRouter(EditThread);

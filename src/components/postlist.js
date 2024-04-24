@@ -1,27 +1,28 @@
 import React, { Component } from "react";
-import ThreadService from "../services/threadservice";
+import PostService from "../services/postservice";
+import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
 
-export default class ThreadList extends Component {
+class PostList extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchName = this.onChangeSearchName.bind(this);
-    this.retrieveThreads = this.retrieveThreads.bind(this);
+    this.retrievePosts = this.retrievePosts.bind(this);
     this.refreshList = this.refreshList.bind(this);
-    this.setActiveThread = this.setActiveThread.bind(this);
-    //this.removeAllThreads = this.removeAllThreads.bind(this);
+    this.setActivePost = this.setActivePost.bind(this);
+    //this.removeAllPosts = this.removeAllPosts.bind(this);
     this.searchName = this.searchName.bind(this);
 
     this.state = {
-      threads: [],
-      currentThread: null,
+      posts: [],
+      currentPost: null,
       currentIndex: -1,
       searchName: ""
     };
   }
 
   componentDidMount() {
-    this.retrieveThreads();
+    this.retrievePosts();
   }
 
   onChangeSearchName(e) {
@@ -32,11 +33,11 @@ export default class ThreadList extends Component {
     });
   }
 
-  retrieveThreads() {
-    ThreadService.getAll()
+  retrievePosts() {
+    PostService.getAll()
       .then(response => {
         this.setState({
-          threads: response.data
+          posts: response.data
         });
         console.log(response.data);
       })
@@ -46,16 +47,16 @@ export default class ThreadList extends Component {
   }
 
   refreshList() {
-    this.retrieveThreads();
+    this.retrievePosts();
     this.setState({
-      currentThread: null,
+      currentPost: null,
       currentIndex: -1
     });
   }
 
-  setActiveThread(thread, index) {
+  setActivePost(post, index) {
     this.setState({
-      currentThread: thread,
+      currentPost: post,
       currentIndex: index
     });
   }
@@ -72,10 +73,10 @@ export default class ThreadList extends Component {
   }*/
 
   searchName() {
-    ThreadService.findByName(this.state.searchName)
+    PostService.findByName(this.state.searchName)
       .then(response => {
         this.setState({
-          threads: response.data
+          posts: response.data
         });
         console.log(response.data);
       })
@@ -85,7 +86,7 @@ export default class ThreadList extends Component {
   }
 
   render() {
-    const { searchName, threads, currentThread, currentIndex } = this.state;
+    const { searchName, posts, currentPost, currentIndex } = this.state;
 
     return (
       <div className="list row">
@@ -110,71 +111,71 @@ export default class ThreadList extends Component {
           </div>
         </div>
         <div className="col-md-6">
-          <h4>Threads List</h4>
+          <h4>Threadname - Posts List</h4>
 
           <ul className="list-group">
-            {threads &&
-              threads.map((thread, index) => (
+            {posts &&
+              posts.map((post, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveThread(thread, index)}
+                  onClick={() => this.setActivePost(post, index)}
                   key={index}
                 >
-                  {thread.name}
+                  {post.name}
                 </li>
               ))}
           </ul>
         {/*
           <button
             className="m-3 btn btn-sm btn-danger"
-            onClick={this.removeAllThreads}
+            onClick={this.removeAllPosts}
             Remove All
           </button>
           >*/}
         </div>
         <div className="col-md-6">
-          {currentThread ? (
+          {currentPost ? (
             <div>
-              <h4>Thread</h4>
+              <h4>Post</h4>
               <div>
                 <label>
                   <strong>Name:</strong>
                 </label>{" "}
-                {currentThread.name}
+                {currentPost.name}
               </div>
               <div>
                 <label>
                   <strong>Description:</strong>
                 </label>{" "}
-                {currentThread.description}
+                {currentPost.description}
               </div>
               {/*
               <div>
                 <label>
                   <strong>Status:</strong>
                 </label>{" "}
-                {currentThread.published ? "Published" : "Pending"}
+                {currentPost.published ? "Published" : "Pending"}
           </div>*/}
-              <div>
-                <Link
-                  to={"/editthread/" + currentThread.id}
-                >
-                  Edit
-                </Link>
-              </div>
+
               <Link
-                to={"/thread/" + currentThread.id}
+                to={"/editpost/" + currentPost.id}
               >
-                Visit thread
+                Edit
+              </Link>
+
+              <Link
+                to={"/post/" + currentPost.id}
+              >
+                Visit post
               </Link>
             </div>
           ) : (
             <div>
               <br />
-              <p>Please click on a Thread...</p>
+              <p>Please click on a Post...</p>
             </div>
           )}
         </div>
@@ -182,3 +183,4 @@ export default class ThreadList extends Component {
     );
   }
 }
+export default withRouter(PostList);
