@@ -158,13 +158,13 @@ export default class ThreadList extends Component {
                 </label>{" "}
                 {currentThread.published ? "Published" : "Pending"}
           </div>*/}
-
-              <Link
-                to={"/editthread/" + currentThread.id}
-              >
-                Edit
-              </Link>
-
+              <div>
+                <Link
+                  to={"/editthread/" + currentThread.id}
+                >
+                  Edit
+                </Link>
+              </div>
               <Link
                 to={"/thread/" + currentThread.id}
               >

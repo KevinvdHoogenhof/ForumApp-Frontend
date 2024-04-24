@@ -9,7 +9,11 @@ class PostService {
     return https.get(`/post/post/${id}`);
   }
 
-  //Add get calls for post / threadid 
+  //Add get calls for post / threadid
+  
+  getPostByThreadID(id) {
+    return https.get(`/post/post/getpostsbythreadid/${id}`);
+  }
 
   create(data) {
     return https.post("/post/post", data);

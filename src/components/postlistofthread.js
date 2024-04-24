@@ -34,7 +34,7 @@ class PostListOfThread extends Component {
   }
 
   retrievePosts(id) {
-    PostService.get(id)
+    PostService.getPostByThreadID(id)
       .then(response => {
         this.setState(prevState => ({
           posts: [...prevState.posts, response.data] // Remove when API is fixed to get all posts of thread
