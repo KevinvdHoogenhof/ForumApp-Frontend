@@ -48,6 +48,11 @@ class App extends Component {
                 PostPost
               </Link>
             </li>
+            <li className="nav-item">
+              <Link to={"/comments"} className="nav-link">
+                Comments
+              </Link>
+            </li>
           </div>
         </nav>
 

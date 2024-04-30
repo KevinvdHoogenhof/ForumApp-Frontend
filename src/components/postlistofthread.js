@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PostService from "../services/postservice";
+import ThreadService from "../services/threadservice";
 import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
 
@@ -14,6 +15,7 @@ class PostListOfThread extends Component {
     this.searchName = this.searchName.bind(this);
 
     this.state = {
+      thread: null,
       posts: [],
       currentPost: null,
       currentIndex: -1,
@@ -23,11 +25,23 @@ class PostListOfThread extends Component {
   }
 
   componentDidMount() {
+    this.getThread(this.props.router.params.id);
     this.retrievePosts(this.props.router.params.id);
     
     this.setState({
       tid: this.props.router.params.id
     });
+  }
+
+  getThread(id) {
+    ThreadService.get(id)
+      .then(response => {
+        this.setState({ thread: response.data });
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching thread:', error);
+      });
   }
 
   onChangeSearchName(e) {
@@ -98,8 +112,10 @@ class PostListOfThread extends Component {
   }
 
   render() {
-    const { searchName, posts, currentPost, currentIndex, tid } = this.state;
-    const threadName = posts.length > 0 ? posts[0].threadName : '';
+    const { thread, searchName, posts, currentPost, currentIndex, tid } = this.state;
+    const threadName = (thread ? thread.name : '');
+    const threadDescription = (thread ? thread.description : '');
+
     //const tid = posts.length > 0 ? posts[0].threadId : '';
 
     return (
@@ -125,7 +141,8 @@ class PostListOfThread extends Component {
           </div>
         </div>
         <div className="col-md-6">
-          <h4>{threadName} - Posts List </h4>
+          <h4>{threadName}</h4>
+          <h5>{threadDescription}</h5>
           <div>
             <Link to={"/postpost/" + tid}>
               New Post

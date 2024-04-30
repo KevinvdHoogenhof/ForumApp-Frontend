@@ -1,9 +1,96 @@
 import React, { Component } from "react";
 import PostService from "../services/postservice";
+import ThreadService from "../services/threadservice";
 import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
 
 class PostPost extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      threadId: '',
+      threadName: '',
+      authorId: 0,
+      authorName: 'asd',
+      name: '',
+      content: '',
+    };
+  }
+
+  componentDidMount() {
+    this.getThread(this.props.router.params.id);
+  }
+
+  getThread(id) {
+    ThreadService.get(id)
+    .then(response => {
+      const { id, name } = response.data;
+      this.setState({ threadId: id, threadName: name });
+    })
+      .catch(error => {
+        console.error('Error fetching thread:', error);
+      });
+  }
+
+  handleInputChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const { name, content } = this.state;
+
+    if (!name || !content) {
+      alert('Name and Content are required');
+      return;
+    }
+
+    const newPost = {
+      threadId: this.state.threadId,
+      threadName: this.state.threadName,
+      authorId: this.state.authorId,
+      authorName: this.state.authorName,
+      name,
+      content
+    };
+
+    PostService.create(newPost)
+    .then(response => {
+      console.log('Post created successfully:', response.data);
+      window.location.href = `/thread/${this.state.threadId}`;
+      // Redirect to the post page or homepage
+    })
+    .catch(error => {
+      console.error('Error creating post:', error);
+    });
+}
+
+render() {
+  return (
+    <div>
+      <h2>New Post</h2>
+      <form onSubmit={this.handleSubmit}>
+        <div>
+          <label>
+            Name:
+            <input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} />
+          </label>
+        </div>
+        <div>
+          <label>
+            Content:
+            <textarea name="content" value={this.state.content} onChange={this.handleInputChange}></textarea>
+          </label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+}
+}
+export default withRouter(PostPost);
+/*class PostPost extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
@@ -119,7 +206,6 @@ class PostPost extends Component {
               />
             </div>
 
-            {/*Add fields*/}
 
             <button onClick={this.savePost} className="btn btn-success">
               Submit
@@ -130,4 +216,4 @@ class PostPost extends Component {
     );
   }
 }
-export default withRouter(PostPost);
+export default withRouter(PostPost);*/
