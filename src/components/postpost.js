@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PostService from "../services/postservice";
+import { withRouter } from '../common/with-router';
+import { Link } from "react-router-dom";
 
-export default class PostPost extends Component {
+class PostPost extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
@@ -11,6 +13,10 @@ export default class PostPost extends Component {
 
     this.state = { //Update later to fit model
       id: null,
+      threadId: "6622190fe21ab10bc3650d6b",
+      threadName: "General",
+      authorId: 0,
+      authorName: "asd", //Update later for correct user
       name: "",
       content: "", 
 
@@ -34,6 +40,10 @@ export default class PostPost extends Component {
 
   savePost() {
     var data = {
+      threadId: this.state.threadId,
+      threadName: this.state.threadName,
+      authorId: this.state.authorId,
+      authorName: this.state.authorName, 
       name: this.state.name,
       content: this.state.content
     };
@@ -55,10 +65,17 @@ export default class PostPost extends Component {
   }
 
   newPost() {
+    const { tid } = this.props.match.params;
+    const threadId = tid || "6622190fe21ab10bc3650d6b";
+
     this.setState({
       id: null,
+      threadId: threadId,
+      threadName: "no",
+      authorId: 0,
+      authorName: "asd", //Update later for correct user
       name: "",
-      content: "", //Add fields
+      content: "", 
 
       submitted: false
     });
@@ -113,3 +130,4 @@ export default class PostPost extends Component {
     );
   }
 }
+export default withRouter(PostPost);

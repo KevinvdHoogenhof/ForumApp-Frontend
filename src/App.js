@@ -6,10 +6,18 @@ import "./App.css";
 import PostThread from "./components/postthread";
 import EditThread from "./components/editthread";
 import ThreadList from "./components/threadlist";
+
 import PostListOfThread from "./components/postlistofthread";
 import PostPost from "./components/postpost";
 import EditPost from "./components/editpost";
 import PostList from "./components/postlist";
+import Post from "./components/post";
+
+//import CommentListOfThread from "./components/commentlistofthread"; Include in others?
+//import CommentListOfPost from "./components/commentlistofpost";
+//import PostComment from "./components/postcomment"; Include in post?
+import EditComment from "./components/editcomment";
+import CommentList from "./components/commentlist";
 
 class App extends Component {
   render() {
@@ -36,7 +44,7 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to={"/postpost"} className="nav-link">
+              <Link to={"/postpost/6622190fe21ab10bc3650d6b"} className="nav-link">
                 PostPost
               </Link>
             </li>
@@ -51,8 +59,11 @@ class App extends Component {
             <Route path="/editthread/:id" element={<EditThread/>} />
             <Route path="/thread/:id" element={<PostListOfThread/>} />
             <Route path="/posts" element={<PostList/>} />
-            <Route path="/postpost" element={<PostPost/>} />
+            <Route path="/postpost/:id" element={<PostPost/>} />
             <Route path="/editpost/:id" element={<EditPost/>} />
+            <Route path="/post/:id" element={<Post/>} />
+            <Route path="/comments" element={<CommentList/>} />
+            <Route path="/editcomment/:id" element={<EditComment/>} />
           </Routes>
         </div>
       </div>

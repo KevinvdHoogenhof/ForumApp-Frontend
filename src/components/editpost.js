@@ -6,7 +6,7 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this); //Add fields
+    this.onChangeContent = this.onChangeContent.bind(this); //Add fields
     this.getPost = this.getPost.bind(this);
     //this.updatePublished = this.updatePublished.bind(this);
     this.updatePost = this.updatePost.bind(this);
@@ -16,7 +16,7 @@ class EditPost extends Component {
       currentPost: {
         id: null,
         name: "",
-        description: "", //Add fields
+        content: "", //Add fields
         //published: false
       },
       message: ""
@@ -40,13 +40,13 @@ class EditPost extends Component {
     });
   }
 
-  onChangeDescription(e) {
-    const description = e.target.value;
+  onChangeContent(e) {
+    const content = e.target.value;
     
     this.setState(prevState => ({
       currentPost: {
         ...prevState.currentPost,
-        description: description
+        content: content
       }
     }));
   }
@@ -136,13 +136,13 @@ class EditPost extends Component {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="content">Content</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="description"
-                  value={currentPost.description}
-                  onChange={this.onChangeDescription}
+                  id="content"
+                  value={currentPost.content}
+                  onChange={this.onChangeContent}
                 />
               </div>
 
@@ -168,18 +168,17 @@ class EditPost extends Component {
               >
                 Publish
               </button>
-            )}*/}
+            )}
 
             <button
               className="badge badge-danger mr-2"
               onClick={this.deletePost}
             >
               Delete
-            </button>
+            </button>*/}
 
             <button
               type="submit"
-              className="badge badge-success"
               onClick={this.updatePost}
             >
               Update

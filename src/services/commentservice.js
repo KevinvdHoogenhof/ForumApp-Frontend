@@ -9,6 +9,18 @@ class CommentService {
     return https.get(`/comment/comment/${id}`);
   }
 
+  getCommentsByThreadId(tid) {
+    return https.get(`/comment/comment/getcommentsbythreadid/${tid}`);
+  }
+
+  getCommentsByPostId(pid) {
+    return https.get(`/comment/comment/getcommentsbypostid/${pid}`);
+  }
+
+  getCommentsByAuthorId(aid) {
+    return https.get(`/comment/comment/getcommentsbyauthor/${aid}`);
+  }
+
   create(data) {
     return https.post("/comment/comment", data);
   }
@@ -21,9 +33,9 @@ class CommentService {
     return https.delete(`/comment/comment/${id}`);
   }
 
-  //findByTitle(title) {
-  //  return https.get(`/tutorials?title=${title}`);
-  //}
+  findByName(name) {
+    return https.get(`/comment/comment/getcommentsbyname/${name}`);
+  }
 }
 
 export default new CommentService();

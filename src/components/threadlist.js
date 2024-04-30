@@ -72,6 +72,7 @@ export default class ThreadList extends Component {
   }*/
 
   searchName() {
+    if (this.state.searchName !== "") {
     ThreadService.findByName(this.state.searchName)
       .then(response => {
         this.setState({
@@ -82,6 +83,9 @@ export default class ThreadList extends Component {
       .catch(e => {
         console.log(e);
       });
+    } else {
+      this.retrieveThreads(this.props.router.params.id);
+    }
   }
 
   render() {
@@ -151,6 +155,12 @@ export default class ThreadList extends Component {
                 </label>{" "}
                 {currentThread.description}
               </div>
+              <div>
+                <label>
+                  <strong>Posts:</strong>
+                </label>{" "}
+                {currentThread.posts}
+              </div>
               {/*
               <div>
                 <label>
@@ -170,6 +180,11 @@ export default class ThreadList extends Component {
               >
                 Visit thread
               </Link>
+              <div>
+                <Link to={"/postpost/" + currentThread.id}>
+                  New Post
+                </Link>
+              </div>
             </div>
           ) : (
             <div>

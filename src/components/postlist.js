@@ -73,6 +73,7 @@ class PostList extends Component {
   }*/
 
   searchName() {
+    if (this.state.searchName !== "") {
     PostService.findByName(this.state.searchName)
       .then(response => {
         this.setState({
@@ -83,6 +84,9 @@ class PostList extends Component {
       .catch(e => {
         console.log(e);
       });
+    } else {
+      this.retrievePosts(this.props.router.params.id);
+    }
   }
 
   render() {
@@ -110,9 +114,9 @@ class PostList extends Component {
             </div>
           </div>
         </div>
+        
         <div className="col-md-6">
-          <h4>Threadname - Posts List</h4>
-
+          <h4>Posts List</h4>
           <ul className="list-group">
             {posts &&
               posts.map((post, index) => (
@@ -148,9 +152,21 @@ class PostList extends Component {
               </div>
               <div>
                 <label>
-                  <strong>Description:</strong>
+                  <strong>Content:</strong>
                 </label>{" "}
-                {currentPost.description}
+                {currentPost.content}
+              </div>
+              <div>
+                <label>
+                  <strong>Author:</strong>
+                </label>{" "}
+                {currentPost.authorName} / ID={currentPost.authorId} / !! Combine as link later !!
+              </div>
+              <div>
+                <label>
+                  <strong>Comments:</strong>
+                </label>{" "}
+                {currentPost.comments}
               </div>
               {/*
               <div>
@@ -159,13 +175,13 @@ class PostList extends Component {
                 </label>{" "}
                 {currentPost.published ? "Published" : "Pending"}
           </div>*/}
-
-              <Link
-                to={"/editpost/" + currentPost.id}
-              >
-                Edit
-              </Link>
-
+              <div>
+                <Link
+                  to={"/editpost/" + currentPost.id}
+                >
+                  Edit
+                </Link>
+              </div>
               <Link
                 to={"/post/" + currentPost.id}
               >
