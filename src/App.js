@@ -40,7 +40,8 @@ class App extends Component {
           <Link to={"/threads"} className="navbar-brand">
             Forum application
           </Link>
-          <div className="navbar-nav mr-auto">
+          <div className="navbar-nav mr-auto" style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+            <div className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={"/threads"} className="nav-link">
                 Threads
@@ -76,6 +77,8 @@ class App extends Component {
                 Terms of Service
               </Link>
             </li>
+            </div>
+            <div className="navbar-nav mr-auto" style={{ marginRight: '1%' }}>
               {isLoggedIn ? (
                 <li className="nav-item">
                   <button className="btn nav-link" onClick={this.handleLogout}>
@@ -89,6 +92,7 @@ class App extends Component {
                   </Link>
                 </li>
               )}
+            </div>
           </div>
         </nav>
 
