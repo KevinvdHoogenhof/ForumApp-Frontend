@@ -5,6 +5,7 @@ import "./App.css";
 
 import Contact from "./pages/contact";
 import TermsOfService from "./pages/termsofservice";
+import Profile from "./components/profile";
 
 import Login from "./components/login";
 import Register from "./components/register";
@@ -80,11 +81,16 @@ class App extends Component {
             </div>
             <div className="navbar-nav mr-auto" style={{ marginRight: '1%' }}>
               {isLoggedIn ? (
-                <li className="nav-item">
-                  <button className="btn nav-link" onClick={this.handleLogout}>
-                    Logout
-                  </button>
+                <><li className="nav-item">
+                  <Link to={"/profile"} className="nav-link">
+                    Profile
+                  </Link>
                 </li>
+                <li className="nav-item">
+                    <button className="btn nav-link" onClick={this.handleLogout}>
+                      Logout
+                    </button>
+                  </li></>
               ) : (
                 <li className="nav-item">
                   <Link to={"/login"} className="nav-link">
@@ -111,6 +117,7 @@ class App extends Component {
             <Route path="/editcomment/:id" element={<EditComment/>} />
             <Route path="/contact" element={<Contact/>} />
             <Route path="/termsofservice" element={<TermsOfService/>} />
+            <Route path="/profile" element={<Profile/>} />
             <Route path="/login" element={<Login/>} />
             <Route path="/register" element={<Register/>} />
           </Routes>

@@ -2,11 +2,11 @@ import https from "../https-common";
 
 class AuthService {
   register() {
-    return https.get("/auth/register");
+    return https.post("/auth/register");
   }
 
   login() {
-    return https.get("/auth/login");
+    return https.post("/auth/login");
   }
 /*
   logout() {
@@ -14,7 +14,11 @@ class AuthService {
   }*/
 
   verify() {
-    return https.get("/auth/verify");
+    return https.post("/auth/verify");
+  }
+
+  delete(id, data) {
+    return https.delete(`/auth/delete/${id}`, data);
   }
 }
 
