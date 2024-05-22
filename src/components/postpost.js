@@ -3,11 +3,16 @@ import PostService from "../services/postservice";
 import ThreadService from "../services/threadservice";
 import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
 class PostPost extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      token: "",
+      isLoggedIn: false,
+      //id: "",
+      //username: "",
       threadId: '',
       threadName: '',
       authorId: 0,
@@ -19,6 +24,29 @@ class PostPost extends Component {
 
   componentDidMount() {
     this.getThread(this.props.router.params.id);
+    this.getToken();
+  }
+
+  getToken() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.setState({ isLoggedIn: true, token }, () => {
+        this.decodeToken();
+      });
+    }
+  }
+
+  decodeToken() {
+    try {
+      const decodedToken = jwtDecode(this.state.token);
+      const { id, username } = decodedToken.sub;
+      this.setState({
+        authorId: id,
+        authorName: username
+      });
+    } catch (error) {
+      console.error('Invalid token', error);
+    }
   }
 
   getThread(id) {

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import AuthService from "../services/authservice";
 import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
 class Profile extends Component {
     constructor(props) {
@@ -20,9 +21,25 @@ class Profile extends Component {
     }
 
     getToken() {
-      this.setState({
-        isLoggedIn: !!localStorage.getItem('token')
-      });
+      const token = localStorage.getItem('token');
+      if (token) {
+        this.setState({ isLoggedIn: true, token }, () => {
+          this.decodeToken();
+        });
+      }
+    }
+
+    decodeToken() {
+      try {
+        const decodedToken = jwtDecode(this.state.token);
+        const { id, username } = decodedToken.sub;
+        this.setState({
+          id,
+          name: username
+        });
+      } catch (error) {
+        console.error('Invalid token', error);
+      }
     }
 
     handleLogout = () => {
@@ -35,9 +52,10 @@ class Profile extends Component {
 
       if (confirmDelete) {
         const { id, token } = this.state;
-        AuthService.delete(id, token)
+        AuthService.delete(id)
         .then(response => {
           console.log('Account deleted:', response.data);
+          localStorage.removeItem('token');
           window.location.href = `/`;
         })
         .catch(error => {
@@ -47,7 +65,7 @@ class Profile extends Component {
     }
   
     render() {
-        const { isLoggedIn, name } = this.state;
+        const { isLoggedIn, name, id } = this.state;
     
         if(!isLoggedIn){
             return (
@@ -62,6 +80,7 @@ class Profile extends Component {
           <div style={{ textAlign: 'center' }}>
             <h1>Profile</h1>
             <h2>Username: {name}</h2>
+            <h2>Id: {id}</h2>
             <br />
             <button onClick={this.handleLogout}> Logout</button>
             <br />

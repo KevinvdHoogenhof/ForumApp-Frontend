@@ -3,14 +3,19 @@ import AuthService from '../services/authservice';
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await AuthService.login(username, password);
-      const token = response.data.token;
+      var data = {
+        email: email,
+        password: password
+      };
+      const response = await AuthService.login(data);
+      console.log(response.data);
+      const token = response.data.access_token;
       localStorage.setItem('token', token);
       window.location.href = `/`;
       console.log('Login successful');
@@ -26,11 +31,11 @@ const Login = () => {
       <form onSubmit={handleLogin}>
         <div>
           <label>
-            Username:
+            Email:
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </label>
         </div>

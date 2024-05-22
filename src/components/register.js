@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -14,12 +15,23 @@ const Register = () => {
       return;
     }
     try {
-        const response = await AuthService.register(username, password);
-        const token = response.data.token;
-        localStorage.setItem('token', token);
-        window.location.href = `/`;
+        var data = {
+          username: username,
+          email: email,
+          password: password
+        };
+        const response = await AuthService.register(data);
+        //const token = response.data.token;
+        alert(response.data.message + ". Please login to your account.");
+        //localStorage.setItem('token', token);
+        window.location.href = `/login`;
     } catch (error) {
       console.error('Registration failed:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`Registration failed: ${error.response.data.message}`);
+      } else {
+        alert('Registration failed. Please try again.');
+      }
       // Handle registration failure, show error message, etc.
     }
   };
@@ -35,6 +47,16 @@ const Register = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Email:
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </label>
         </div>

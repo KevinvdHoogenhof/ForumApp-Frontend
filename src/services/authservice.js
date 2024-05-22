@@ -1,12 +1,12 @@
 import https from "../https-common";
 
 class AuthService {
-  register() {
-    return https.post("/auth/register");
+  register(data) {
+    return https.post("/auth/register", data);
   }
 
-  login() {
-    return https.post("/auth/login");
+  login(data) {
+    return https.post("/auth/login", data);
   }
 /*
   logout() {
@@ -17,8 +17,8 @@ class AuthService {
     return https.post("/auth/verify");
   }
 
-  delete(id, data) {
-    return https.delete(`/auth/delete/${id}`, data);
+  delete(id) {
+    return https.delete(`/auth/users/${id}`);
   }
 }
 

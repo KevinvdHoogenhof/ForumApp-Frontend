@@ -3,11 +3,16 @@ import PostService from "../services/postservice";
 import CommentService from "../services/commentservice";
 import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
 class Post extends Component{
     constructor(props) {
         super(props);
         this.state = {
+          token: "",
+          isLoggedIn: false,
+          id: "",
+          username: "",
           post: null,
           comments: [],
           newComment: {
@@ -25,9 +30,32 @@ class Post extends Component{
     }
 
     componentDidMount() {
+        this.getToken();
         const postId = this.props.router.params.id;
         this.getPost(postId);
         this.getComments(postId);
+    }
+
+    getToken() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        this.setState({ isLoggedIn: true, token }, () => {
+          this.decodeToken();
+        });
+      }
+    }
+
+    decodeToken() {
+      try {
+        const decodedToken = jwtDecode(this.state.token);
+        const { id, username } = decodedToken.sub;
+        this.setState({
+          id,
+          username
+        });
+      } catch (error) {
+        console.error('Invalid token', error);
+      }
     }
 
     getPost(postId) {
@@ -42,7 +70,7 @@ class Post extends Component{
                 threadName: post.threadName,
                 postId: post.id,
                 postName: post.name,
-                authorId: 0,
+                authorId: '0',
                 authorName: 'asd'
               }
             });
@@ -74,9 +102,15 @@ class Post extends Component{
     
     handleSubmit = (event) => {
         event.preventDefault();
-        const { newComment } = this.state;
+        const { id, username, newComment } = this.state;
+
+        const updatedNewComment = {
+          ...newComment,
+          authorId: id,
+          authorName: username
+        };
     
-        CommentService.create(newComment)
+        CommentService.create(updatedNewComment)
           .then(response => {
             console.log('Comment created successfully:', response.data);
             // Clear the form and reload comments
@@ -95,7 +129,7 @@ class Post extends Component{
     }
 
     render() {
-        const { post, comments, newComment, showComments } = this.state;
+        const { post, comments, newComment, showComments, isLoggedIn } = this.state;
     
         return (
           <div>
@@ -114,23 +148,26 @@ class Post extends Component{
               <p>Loading...</p>
             )}
     
-            <h2>New Comment</h2>
-            <form onSubmit={this.handleSubmit}>
-              <div>
-                <label>
-                  Name:
-                  <input type="text" name="name" value={newComment.name} onChange={this.handleInputChange} />
-                </label>
-              </div>
-              <div>
-                <label>
-                  Content:
-                  <input type="text" name="content" value={newComment.content} onChange={this.handleInputChange} />
-                </label>
-              </div>
-              <button type="submit">Submit</button>
-            </form>
-    
+            {isLoggedIn ? (
+            <><h2>New Comment</h2><form onSubmit={this.handleSubmit}>
+                <div>
+                  <label>
+                    Name:
+                    <input type="text" name="name" value={newComment.name} onChange={this.handleInputChange} />
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    Content:
+                    <input type="text" name="content" value={newComment.content} onChange={this.handleInputChange} />
+                  </label>
+                </div>
+                <button type="submit">Submit</button>
+              </form></>
+            ) : (
+              <h3>Please login to comment on this post.</h3>
+            )}
+
             <h2>
               Comments <button onClick={this.toggleComments}>{showComments ? 'Hide' : 'Show'}</button>
             </h2>
