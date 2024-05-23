@@ -1,5 +1,13 @@
 # ForumApp-Frontend
 
+# Cypress
+
+```npm install cypress --save-dev```
+
+```npx cypress open```
+
+```npm start``` In a different terminal to start the application and be able to run the test
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
