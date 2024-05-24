@@ -23,3 +23,22 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('waitForAlert', (message) => {
+    return cy.window().then((win) => {
+      return new Cypress.Promise((resolve, reject) => {
+        const startTime = Date.now();
+        const checkAlert = () => {
+          const alertMessage = win.document.querySelector('.alert-message');
+          if (alertMessage && alertMessage.textContent.includes(message)) {
+            resolve();
+          } else if (Date.now() - startTime > 4000) {
+            reject(new Error(`Timeout waiting for alert with message: ${message}`));
+          } else {
+            setTimeout(checkAlert, 100);
+          }
+        };
+        checkAlert();
+      });
+    });
+  });
