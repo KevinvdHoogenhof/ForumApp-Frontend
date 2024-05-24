@@ -115,6 +115,7 @@ class PostListOfThread extends Component {
     const { thread, searchName, posts, currentPost, currentIndex, tid } = this.state;
     const threadName = (thread ? thread.name : '');
     const threadDescription = (thread ? thread.description : '');
+    const threadPosts = (thread ? thread.posts : '');
 
     //const tid = posts.length > 0 ? posts[0].threadId : '';
 
@@ -143,6 +144,7 @@ class PostListOfThread extends Component {
         <div className="col-md-6">
           <h4>{threadName}</h4>
           <h5>{threadDescription}</h5>
+          <h5>Posts: {threadPosts}</h5>
           <div>
             <Link to={"/postpost/" + tid}>
               New Post

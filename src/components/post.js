@@ -143,6 +143,7 @@ class Post extends Component{
                 <p>Author Name: {post.authorName}</p>
                 <p>Name: {post.name}</p>
                 <p>Content: {post.content}</p>
+                <p>Comments: {post.comments}</p>
               </div>
             ) : (
               <p>Loading...</p>
