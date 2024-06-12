@@ -168,14 +168,7 @@ class EditPost extends Component {
               >
                 Publish
               </button>
-            )}
-
-            <button
-              className="badge badge-danger mr-2"
-              onClick={this.deletePost}
-            >
-              Delete
-            </button>*/}
+            )}*/}
 
             <button
               type="submit"
@@ -183,6 +176,14 @@ class EditPost extends Component {
             >
               Update
             </button>
+
+            <button
+              type="submit"
+              onClick={this.deletePost}
+            >
+              Delete
+            </button>
+
             <p>{this.state.message}</p>
           </div>
         ) : (

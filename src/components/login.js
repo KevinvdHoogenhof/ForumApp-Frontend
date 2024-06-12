@@ -13,12 +13,21 @@ const Login = () => {
         email: email,
         password: password
       };
-      const response = await AuthService.login(data);
-      console.log(response.data);
-      const token = response.data.access_token;
-      localStorage.setItem('token', token);
-      window.location.href = `/`;
-      console.log('Login successful');
+      try {
+        const response = await AuthService.login(data);
+        if (response.data.access_token) {
+            console.log('Login successful');
+            const token = response.data.access_token;
+            localStorage.setItem('token', token);
+            window.location.href = `/`;
+        } else {
+            console.error('Login failed:', response.data.message);
+            alert(`Login failed: ${response.data.message}`);
+        }
+      } catch (error) {
+          console.error('An error occurred:', error);
+          // Handle error here
+      }
     } catch (error) {
       console.error('Login failed:', error);
       alert(`Login failed: ${error.response.data.message}`);
