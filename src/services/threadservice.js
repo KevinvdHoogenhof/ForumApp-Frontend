@@ -21,9 +21,9 @@ class ThreadService {
     return https.delete(`/thread/thread/${id}`);
   }
 
-  //findByTitle(title) {
-  //  return https.get(`/tutorials?title=${title}`);
-  //}
+  findByName(name) {
+    return https.get(`/thread/thread/getthreadsbyname/${name}`);
+  }
 }
 
 export default new ThreadService();

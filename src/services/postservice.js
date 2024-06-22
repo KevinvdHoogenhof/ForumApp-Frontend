@@ -8,11 +8,13 @@ class PostService {
   get(id) {
     return https.get(`/post/post/${id}`);
   }
-
-  //Add get calls for post / threadid
   
-  getPostByThreadID(id) {
+  getPostsByThreadID(id) {
     return https.get(`/post/post/getpostsbythreadid/${id}`);
+  }
+
+  getPostsByAuthorID(id) {
+    return https.get(`/post/post/getpostsbyauthorid/${id}`);
   }
 
   create(data) {
@@ -27,9 +29,9 @@ class PostService {
     return https.delete(`/post/post/${id}`);
   }
 
-  //findByTitle(title) {
-  //  return https.get(`/tutorials?title=${title}`);
-  //}
+  findByName(name) {
+    return https.get(`/post/post/getpostsbyname/${name}`);
+  }
 }
 
 export default new PostService();

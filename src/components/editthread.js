@@ -166,14 +166,7 @@ class EditThread extends Component {
               >
                 Publish
               </button>
-            )}
-
-            <button
-              className="badge badge-danger mr-2"
-              onClick={this.deleteThread}
-            >
-              Delete
-            </button>*/}
+            )}*/}
 
             <button
               type="submit"
@@ -181,6 +174,14 @@ class EditThread extends Component {
             >
               Update
             </button>
+
+            <button
+              type="submit"
+              onClick={this.deleteThread}
+            >
+              Delete
+            </button>
+
             <p>{this.state.message}</p>
           </div>
         ) : (

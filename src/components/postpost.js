@@ -1,7 +1,124 @@
 import React, { Component } from "react";
 import PostService from "../services/postservice";
+import ThreadService from "../services/threadservice";
+import { withRouter } from '../common/with-router';
+import { Link } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
-export default class PostPost extends Component {
+class PostPost extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      token: "",
+      isLoggedIn: false,
+      //id: "",
+      //username: "",
+      threadId: '',
+      threadName: '',
+      authorId: 0,
+      authorName: 'asd',
+      name: '',
+      content: '',
+    };
+  }
+
+  componentDidMount() {
+    this.getThread(this.props.router.params.id);
+    this.getToken();
+  }
+
+  getToken() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.setState({ isLoggedIn: true, token }, () => {
+        this.decodeToken();
+      });
+    }
+  }
+
+  decodeToken() {
+    try {
+      const decodedToken = jwtDecode(this.state.token);
+      const { id, username } = decodedToken.sub;
+      this.setState({
+        authorId: id,
+        authorName: username
+      });
+    } catch (error) {
+      console.error('Invalid token', error);
+    }
+  }
+
+  getThread(id) {
+    ThreadService.get(id)
+    .then(response => {
+      const { id, name } = response.data;
+      this.setState({ threadId: id, threadName: name });
+    })
+      .catch(error => {
+        console.error('Error fetching thread:', error);
+      });
+  }
+
+  handleInputChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const { name, content } = this.state;
+
+    if (!name || !content) {
+      alert('Name and Content are required');
+      return;
+    }
+
+    const newPost = {
+      threadId: this.state.threadId,
+      threadName: this.state.threadName,
+      authorId: this.state.authorId,
+      authorName: this.state.authorName,
+      name,
+      content
+    };
+
+    PostService.create(newPost)
+    .then(response => {
+      console.log('Post created successfully:', response.data);
+      window.location.href = `/thread/${this.state.threadId}`;
+      // Redirect to the post page or homepage
+    })
+    .catch(error => {
+      console.error('Error creating post:', error);
+    });
+}
+
+render() {
+  return (
+    <div>
+      <h2>New Post</h2>
+      <form onSubmit={this.handleSubmit}>
+        <div>
+          <label>
+            Name:
+            <input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} />
+          </label>
+        </div>
+        <div>
+          <label>
+            Content:
+            <textarea name="content" value={this.state.content} onChange={this.handleInputChange}></textarea>
+          </label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+}
+}
+export default withRouter(PostPost);
+/*class PostPost extends Component {
   constructor(props) {
     super(props);
     this.onChangeName = this.onChangeName.bind(this);
@@ -11,6 +128,10 @@ export default class PostPost extends Component {
 
     this.state = { //Update later to fit model
       id: null,
+      threadId: "6622190fe21ab10bc3650d6b",
+      threadName: "General",
+      authorId: 0,
+      authorName: "asd", //Update later for correct user
       name: "",
       content: "", 
 
@@ -34,6 +155,10 @@ export default class PostPost extends Component {
 
   savePost() {
     var data = {
+      threadId: this.state.threadId,
+      threadName: this.state.threadName,
+      authorId: this.state.authorId,
+      authorName: this.state.authorName, 
       name: this.state.name,
       content: this.state.content
     };
@@ -55,10 +180,17 @@ export default class PostPost extends Component {
   }
 
   newPost() {
+    const { tid } = this.props.match.params;
+    const threadId = tid || "6622190fe21ab10bc3650d6b";
+
     this.setState({
       id: null,
+      threadId: threadId,
+      threadName: "no",
+      authorId: 0,
+      authorName: "asd", //Update later for correct user
       name: "",
-      content: "", //Add fields
+      content: "", 
 
       submitted: false
     });
@@ -102,7 +234,6 @@ export default class PostPost extends Component {
               />
             </div>
 
-            {/*Add fields*/}
 
             <button onClick={this.savePost} className="btn btn-success">
               Submit
@@ -113,3 +244,4 @@ export default class PostPost extends Component {
     );
   }
 }
+export default withRouter(PostPost);*/

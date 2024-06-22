@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PostService from "../services/postservice";
+import ThreadService from "../services/threadservice";
 import { withRouter } from '../common/with-router';
 import { Link } from "react-router-dom";
 
@@ -14,15 +15,33 @@ class PostListOfThread extends Component {
     this.searchName = this.searchName.bind(this);
 
     this.state = {
+      thread: null,
       posts: [],
       currentPost: null,
       currentIndex: -1,
-      searchName: ""
+      searchName: "",
+      tid: ""
     };
   }
 
   componentDidMount() {
+    this.getThread(this.props.router.params.id);
     this.retrievePosts(this.props.router.params.id);
+    
+    this.setState({
+      tid: this.props.router.params.id
+    });
+  }
+
+  getThread(id) {
+    ThreadService.get(id)
+      .then(response => {
+        this.setState({ thread: response.data });
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching thread:', error);
+      });
   }
 
   onChangeSearchName(e) {
@@ -34,14 +53,14 @@ class PostListOfThread extends Component {
   }
 
   retrievePosts(id) {
-    PostService.getPostByThreadID(id)
+    PostService.getPostsByThreadID(id)
       .then(response => {
-        this.setState(prevState => ({
-          posts: [...prevState.posts, response.data] // Remove when API is fixed to get all posts of thread
-        }));
-        //this.setState({
-        //  posts: response.data
-        //});
+        //this.setState(prevState => ({
+        //  posts: [...prevState.posts, response.data] // Remove when API is fixed to get all posts of thread
+        //}));
+        this.setState({
+          posts: response.data
+        });
         console.log(response.data);
       })
       .catch(e => {
@@ -76,6 +95,7 @@ class PostListOfThread extends Component {
   }*/
 
   searchName() {
+    if (this.state.searchName !== "") {
     PostService.findByName(this.state.searchName)
       .then(response => {
         this.setState({
@@ -86,10 +106,18 @@ class PostListOfThread extends Component {
       .catch(e => {
         console.log(e);
       });
+    } else {
+      this.retrievePosts(this.props.router.params.id);
+    }
   }
 
   render() {
-    const { searchName, posts, currentPost, currentIndex } = this.state;
+    const { thread, searchName, posts, currentPost, currentIndex, tid } = this.state;
+    const threadName = (thread ? thread.name : '');
+    const threadDescription = (thread ? thread.description : '');
+    const threadPosts = (thread ? thread.posts : '');
+
+    //const tid = posts.length > 0 ? posts[0].threadId : '';
 
     return (
       <div className="list row">
@@ -114,8 +142,14 @@ class PostListOfThread extends Component {
           </div>
         </div>
         <div className="col-md-6">
-          <h4>Threadname - Posts List</h4>
-
+          <h4>{threadName}</h4>
+          <h5>{threadDescription}</h5>
+          <h5>Posts: {threadPosts}</h5>
+          <div>
+            <Link to={"/postpost/" + tid}>
+              New Post
+            </Link>
+          </div>
           <ul className="list-group">
             {posts &&
               posts.map((post, index) => (
@@ -151,9 +185,21 @@ class PostListOfThread extends Component {
               </div>
               <div>
                 <label>
-                  <strong>Description:</strong>
+                  <strong>Content:</strong>
                 </label>{" "}
-                {currentPost.description}
+                {currentPost.content}
+              </div>
+              <div>
+                <label>
+                  <strong>Author:</strong>
+                </label>{" "}
+                {currentPost.authorName} / ID={currentPost.authorId} / !! Combine as link later !!
+              </div>
+              <div>
+                <label>
+                  <strong>Comments:</strong>
+                </label>{" "}
+                {currentPost.comments}
               </div>
               {/*
               <div>
@@ -162,13 +208,13 @@ class PostListOfThread extends Component {
                 </label>{" "}
                 {currentPost.published ? "Published" : "Pending"}
           </div>*/}
-
-              <Link
-                to={"/editpost/" + currentPost.id}
-              >
-                Edit
-              </Link>
-
+              <div>
+                <Link
+                  to={"/editpost/" + currentPost.id}
+                >
+                  Edit
+                </Link>
+              </div>
               <Link
                 to={"/post/" + currentPost.id}
               >
